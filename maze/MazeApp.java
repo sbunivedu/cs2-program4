@@ -36,16 +36,7 @@ public class MazeApp extends JFrame{
     createMenuBar();
     statusbar = new JLabel("status");
     add(statusbar, BorderLayout.SOUTH);
-    try {
-      // reading starter maze file from inside jar
-      maze = new Maze(new File(getClass().getResource("/maze-complex.txt").toURI()));
-    } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (URISyntaxException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    maze = new Maze();
     add(maze, BorderLayout.CENTER);
 
     setTitle("Maze App");
