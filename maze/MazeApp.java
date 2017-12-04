@@ -29,7 +29,6 @@ public class MazeApp extends JFrame{
 
   public MazeApp(){
     initUI();
-    initSolver();
   }
 
   private void initUI(){
@@ -62,6 +61,20 @@ public class MazeApp extends JFrame{
     JMenu agendas = new JMenu("Agenda");
     ButtonGroup group = new ButtonGroup();
 
+    JRadioButtonMenuItem astar = new JRadioButtonMenuItem("A*");
+    astar.setSelected(true);
+    agendas.add(astar);
+    agenda = new AStar<Square>();
+
+    astar.addItemListener(new ItemListener(){
+      public void itemStateChanged (ItemEvent e){
+        if (!solving && e.getStateChange() == ItemEvent.SELECTED){
+          agenda = new AStar<Square>();
+          statusbar.setText("use A* agenda");
+        }
+      }
+    });
+
     JRadioButtonMenuItem stack = new JRadioButtonMenuItem("Stack");
     stack.setSelected(true);
     agendas.add(stack);
@@ -88,6 +101,7 @@ public class MazeApp extends JFrame{
       }
     });
 
+    group.add(astar);
     group.add(stack);
     group.add(queue);
     menubar.add(agendas);
@@ -95,16 +109,12 @@ public class MazeApp extends JFrame{
     setJMenuBar(menubar);
   }
 
-  private void initSolver(){
-    agenda = new MyStack<Square>();
-    solver = new MazeSolver(maze, agenda);
-  }
-
   private void start(){
     new Thread(new Runnable() {
       public void run() {
         System.err.println("start solver");
         solving = true;
+        solver = new MazeSolver(maze, agenda);
         boolean success = solver.solve();
         if(success == true){
           System.out.println("This maze is solved:");
