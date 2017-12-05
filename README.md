@@ -19,7 +19,7 @@ The modified ```Square``` class stores the distance and implements its
 ## Run Maze App
 * Compile
 ```
-javac maze/*.java
+javac maze/*.java maze/exceptions/*.java
 ```
 * Create a jar file
 ```
