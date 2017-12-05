@@ -5,6 +5,7 @@ import java.io.File;
 public class MazeSolver{
   private Maze maze;
   private Agenda<Square> agenda;
+  private boolean isPaused = false;
 
   public static void main(String[] args) throws FileNotFoundException{
     String fileName = args[0];
@@ -40,13 +41,7 @@ public class MazeSolver{
       }else if (type == SquareType.SPACE){
         addNeighbors(next);
         next.markTried();
-        maze.repaint();
-        try {
-          Thread.sleep(500);
-        } catch (InterruptedException ie){
-        } finally{
-          System.err.println("Pausing...");
-        }
+        animate(); // ask the maze to redraw itself
       }
     }
     return false;
@@ -76,5 +71,28 @@ public class MazeSolver{
     if (neighbor != null && neighbor.getType() != SquareType.WALL){
       agenda.add(neighbor);
     }
+  }
+
+  synchronized private void animate(){
+    if(isPaused){
+      try{
+        wait();
+      } catch(InterruptedException e){}
+    }
+    maze.repaint();
+    try{
+      Thread.sleep(500);
+    } catch (InterruptedException ie){}
+  }
+
+  synchronized public void pause(){
+    isPaused = !isPaused;
+    if(!isPaused){
+      notify();
+    }
+  }
+
+  public boolean isPaused(){
+    return isPaused;
   }
 }
